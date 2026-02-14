@@ -8,7 +8,7 @@
 * [x] Configurar MongoDB
 * [ ] Configurar Redis
 * [x] Criar entidade `User`
-* [ ] Criar entidade `Player`
+* [x] Criar entidade `Player`
 * [x] Implementar BCrypt
 * [x] Criar endpoint `/register`
 * [x] Criar endpoint `/login`
@@ -284,6 +284,9 @@
 * [ ] Dungeons
 * [ ] Bosses
 * [ ] Sistema de quests
+* [ ] Pets
+* [ ] Montaria terrestre e aquatica
+* [ ] 
 * [ ] Economia balanceada
 * [ ] Logs administrativos
 * [ ] Painel GM
