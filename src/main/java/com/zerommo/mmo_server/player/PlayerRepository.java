@@ -5,8 +5,7 @@ import java.util.Optional;
 import java.util.List;
 
 public interface PlayerRepository extends MongoRepository<Player, String> {
-
     Optional<Player> findByNameIgnoreCase(String name);
-
     List<Player> findByUserId(String userId);
+    long countByUserId(String userId);
 }

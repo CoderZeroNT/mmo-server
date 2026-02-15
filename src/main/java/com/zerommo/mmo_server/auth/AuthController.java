@@ -35,6 +35,12 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of("error", "Email already registered"));
         }
 
+        String password = request.getPassword();
+        if (!password.matches("^(?=.*\\d).{8,}$")) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Password must be at least 8 characters and contain a number"));
+        }
+
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

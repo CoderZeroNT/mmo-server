@@ -1,6 +1,5 @@
 package com.zerommo.mmo_server.player;
 
-import com.zerommo.mmo_server.player.Player;
 import com.zerommo.mmo_server.user.User;
 import com.zerommo.mmo_server.user.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -23,21 +22,32 @@ public class PlayerController {
 
     @PostMapping
     public ResponseEntity<?> createPlayer(@RequestBody Map<String, String> request) {
-        String name = request.get("name");
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        
-        User user = userRepository.findByEmail(email).orElseThrow();
+    String name = request.get("name");
+    String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (playerRepository.findByNameIgnoreCase(name).isPresent()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Name already taken"));
-        }
+    User user = userRepository.findByEmail(email).orElseThrow();
 
-        Player player = new Player();
-        player.setName(name);
-        player.setUserId(user.getId());
-        
-        return ResponseEntity.ok(playerRepository.save(player));
+    if (playerRepository.findByNameIgnoreCase(name).isPresent()) {
+        return ResponseEntity.badRequest().body(Map.of("error", "Name already taken"));
     }
+
+    if ("PLAYER".equalsIgnoreCase(user.getRole())) {
+
+        long playerCount = playerRepository.countByUserId(user.getId());
+
+        if (playerCount >= 1) {
+            return ResponseEntity.badRequest().body(
+                    Map.of("error", "PLAYER accounts can only have 1 character"));
+        }
+    }
+
+    Player player = new Player();
+    player.setName(name);
+    player.setUserId(user.getId());
+
+    return ResponseEntity.ok(playerRepository.save(player));
+}
+
 
     @GetMapping("/{name}")
     public ResponseEntity<?> getPlayerByName(@PathVariable String name) {
