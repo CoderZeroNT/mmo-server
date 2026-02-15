@@ -6,7 +6,7 @@
 
 * [x] Criar projeto Spring Boot
 * [x] Configurar MongoDB
-* [ ] Configurar Redis
+* [x] Configurar Redis 
 * [x] Criar entidade `User`
 * [x] Criar entidade `Player`
 * [x] Implementar BCrypt
