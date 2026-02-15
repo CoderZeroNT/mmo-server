@@ -41,14 +41,19 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
 
-        String emailKey = request.getEmail().toLowerCase();
+        String emailKey = normalizeEmail(request.getEmail());
+        String password = request.getPassword();
+
+        if (emailKey == null || password == null) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Email and password are required"));
+        }
 
         if (userRepository.findByEmail(emailKey).isPresent()) {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "Email already registered"));
         }
 
-        String password = request.getPassword();
         if (!password.matches("^(?=.*\\d).{8,}$")) {
             return ResponseEntity.badRequest()
                     .body(Map.of("error",
@@ -70,7 +75,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
-        String emailKey = request.getEmail().toLowerCase();
+        String emailKey = normalizeEmail(request.getEmail());
+        String password = request.getPassword();
+
+        if (emailKey == null || password == null) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Email and password are required"));
+        }
+
         String rateKey = "login:attempts:" + emailKey;
 
         Long attempts = redisService.increment(rateKey, LOGIN_RATE_LIMIT_TTL, TimeUnit.SECONDS);
@@ -81,8 +93,8 @@ public class AuthController {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        emailKey,
+                        password
                 )
         );
 
@@ -102,5 +114,10 @@ public class AuthController {
         String token = jwtService.generateToken(user.getEmail());
 
         return ResponseEntity.ok(Map.of("token", token));
+    }
+
+    private String normalizeEmail(String email) {
+        if (email == null) return null;
+        return email.trim().toLowerCase();
     }
 }

@@ -13,7 +13,7 @@
 * [x] Criar endpoint `/register`
 * [x] Criar endpoint `/login`
 * [x] Implementar JWT
-* [ ] Validar JWT no WebSocket
+* [x] Validar JWT no WebSocket
 
 ### 🌐 WebSocket Core
 
